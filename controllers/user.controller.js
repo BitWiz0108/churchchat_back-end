@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 
 export const userRegister = async (req, res) => {
   try {
-    const { username, password, email } = req.body;
+    const { username, password, email, str1, str2, str3 } = req.body;
     const checkUser = await User.findOne({ username });
     if (checkUser) return res.status(400).json({
       message: "username already used"
@@ -11,6 +11,9 @@ export const userRegister = async (req, res) => {
     const user = new User({ username });
     user.setPassword(password);
     user.email = email;
+    user.job = str1;
+    user.distintive = str2;
+    user.writer = str3;
     await user.save();
     res.status(201).json({});
   } catch (err) {
@@ -23,7 +26,8 @@ export const userRegister = async (req, res) => {
 export const userSignIn = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username }).select("username password salt id");
+    const user = await User.findOne({ username }).select("username password salt id job distintive writer");
+    console.log("USER:", user);
     if (!user) return res.status(400).json({
       message: "User not found"
     });
@@ -38,7 +42,10 @@ export const userSignIn = async (req, res) => {
     res.status(200).json({
       token,
       username,
-      id: user._id
+      id: user._id,
+      job: user.job,
+      distintive: user.distintive,
+      writer: user.writer
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

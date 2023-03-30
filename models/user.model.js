@@ -11,11 +11,31 @@ const userSchema = new mongoose.Schema({
     required: true
     // unique: true,
   },
+
+  job: {
+    type: String,
+    required: true
+    // unique: true,
+  },
+  
+  distintive: {
+    type: String,
+    required: true
+    // unique: true,
+  },
+  
+  writer: {
+    type: String,
+    required: true
+    // unique: true,
+  },
+
   password: {
     type: String,
     required: true,
     select: false
   },
+
   salt: {
     type: String,
     required: true,
