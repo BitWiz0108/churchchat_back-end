@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 
 export const userRegister = async (req, res) => {
   try {
-    const { username, password, email, str1, str2, str3 } = req.body;
+    const { username, password, email, str1, str2, str3, role } = req.body;
     const checkUser = await User.findOne({ username });
     if (checkUser) return res.status(400).json({
       message: "username already used"
@@ -14,6 +14,8 @@ export const userRegister = async (req, res) => {
     user.job = str1;
     user.distintive = str2;
     user.writer = str3;
+    user.role = role;
+    user.base_prompt = "Please ignore our previous conversations and let us start a fresh conversation here. And I am interested in joining your bible study group. ";
     await user.save();
     res.status(201).json({});
   } catch (err) {
@@ -26,8 +28,7 @@ export const userRegister = async (req, res) => {
 export const userSignIn = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username }).select("username password salt id job distintive writer");
-    console.log("USER:", user);
+    const user = await User.findOne({ username }).select("username password salt id job distintive writer role, base_prompt");
     if (!user) return res.status(400).json({
       message: "User not found"
     });
@@ -44,8 +45,10 @@ export const userSignIn = async (req, res) => {
       username,
       id: user._id,
       job: user.job,
-      distintive: user.distintive,
-      writer: user.writer
+      distinctive: user.distintive,
+      writer: user.writer,
+      role: user.role,
+      base_prompt: user.base_prompt,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -53,15 +56,38 @@ export const userSignIn = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  try{
+  try {
     const user = await User.find();
     const usersData = user.map((user, index) => {
       return {
         ...user,
-        key: index // generates a unique key based on the index of the user object in the array
+        key: index
       };
     });
     res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateBasePrompt = async (req, res) => {
+  try {
+    const updatedPrompt = req.body.text;
+    const users = await User.find();
+    users.forEach((user) => {
+      User.findOneAndUpdate(
+        { _id: user._id },
+        { $set: { base_prompt: updatedPrompt } },
+        { new: true },
+        (err) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+        }
+      );
+    });
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

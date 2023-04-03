@@ -9,25 +9,33 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
-    // unique: true,
   },
 
   job: {
     type: String,
     required: true
-    // unique: true,
   },
-  
+
   distintive: {
     type: String,
     required: true
-    // unique: true,
   },
-  
+
   writer: {
     type: String,
     required: true
-    // unique: true,
+  },
+
+  role: {
+    type: Number,
+    required: true,
+    select: true
+  },
+
+  base_prompt: {
+    type: String,
+    required: false,
+    select: true
   },
 
   password: {

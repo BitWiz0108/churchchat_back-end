@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { userRegister, userSignIn, getAllUsers } from "../controllers/user.controller.js";
+import { userRegister, userSignIn, getAllUsers, updateBasePrompt } from "../controllers/user.controller.js";
 import { tokenAuth } from "../middlewares/token.middleware.js";
 import { validate } from "../utils/validator.js";
 
@@ -44,14 +44,11 @@ router.get(
 router.get(
   "/getAll",
   getAllUsers
-  // (req, res) => res.status(200).json({
-  //   username: "asdf"
-  // }),
-
-  // tokenAuth,
-  // (req, res) => res.status(200).json({
-  //   username: req.user.username
-  // })
 );
+
+router.post(
+  "/updateBasePrompt",
+  updateBasePrompt
+)
 
 export default router;
