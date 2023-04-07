@@ -12,7 +12,7 @@ export const chatCompletion = async (req, res) => {
 
     const answer = await openapi.createCompletion({
       model: "text-davinci-003",
-      prompt: prompt,
+      prompt: prompt + " .",
       temperature: 0,
       max_tokens: 3000
     });
